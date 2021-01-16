@@ -75,6 +75,8 @@ useFetch({
 
 `execute` is the only object returned by the hook. It provides as consistent an API as it can, but there are some slight differences depending on if the request is successful, aborted, or failed for some other reason.
 
+Parameters are the same as [fetch](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
+
 #### success
 
 ```jsx
