@@ -1,11 +1,21 @@
 {
-  "name": "use-fetch",
+  "name": "@bloodyaugust/use-fetch",
   "version": "1.0.0",
   "description": "A simple, safe fetch custom hook for React.",
   "main": "main.js",
   "author": "Greyson Richey",
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bloodyaugust/use-fetch.git"
+  },
+  "keywords": [
+    "Hooks",
+    "Custom Hooks",
+    "Fetch",
+    "React"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.12.10",
