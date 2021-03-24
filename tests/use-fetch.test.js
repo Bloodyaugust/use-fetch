@@ -2,6 +2,20 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import useFetch from '../main.js';
 
 describe('use-fetch', () => {
+  describe('fetch object structure', () => {
+    it('provides execute as a function', () => {
+      const { result } = renderHook(() => useFetch());
+
+      expect(result.current.execute).toBeInstanceOf(Function);
+    });
+
+    it('provides completed as a boolean', () => {
+      const { result } = renderHook(() => useFetch());
+
+      expect(result.current.completed).toBe(false);
+    });
+  });
+
   describe('#execute', () => {
     it('provides the response object', async () => {
       const { result } = renderHook(() => useFetch());
@@ -103,6 +117,44 @@ describe('use-fetch', () => {
           .then(({ mounted }) => {
             expect(mounted).toBe(true);
           });
+      });
+    });
+  });
+
+  describe('#completed', () => {
+    it('changes completed to true once the request is complete', async () => {
+      const { result } = renderHook(() => useFetch());
+
+      await act(async () => {
+        expect(result.current.completed).toBe(false);
+
+        await result.current.execute('https://test.com/posts')
+          .then(() => {
+            expect(result.current.completed).toBe(true);
+          });
+      });
+    });
+
+    it('keeps completed in the correct state after re-execution', async () => {
+      const { result } = renderHook(() => useFetch());
+
+      await act(async () => {
+        expect(result.current.completed).toBe(false);
+
+        await result.current.execute('https://test.com/posts')
+          .then(() => {
+            expect(result.current.completed).toBe(true);
+          });
+
+        act(() => {
+          result.current.execute('https://test.com/wait')
+            .catch(({ error }) => {
+              expect(result.current.completed).toBe(true);
+              expect(error.message).toEqual('The user aborted a request.');
+            });
+        });
+
+        expect(result.current.completed).toBe(false);
       });
     });
   });

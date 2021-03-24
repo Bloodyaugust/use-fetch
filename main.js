@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 export default function useFetch(props = {}) {
   const abortController = useRef(null);
+  const completed = useRef(false);
   const mounted = useRef(true);
 
   const execute = async (url, options) => {
@@ -9,6 +10,7 @@ export default function useFetch(props = {}) {
     abortController.current = new AbortController();
 
     try {
+      completed.current = false;
       response = await fetch(url, {
         signal: abortController.current.signal,
         ...options
@@ -17,6 +19,8 @@ export default function useFetch(props = {}) {
       return Promise.reject({
         error
       });
+    } finally {
+      completed.current = true;
     }
 
     if (!response.ok) {
@@ -53,5 +57,5 @@ export default function useFetch(props = {}) {
     }
   }, []);
 
-  return { execute };
+  return { get completed() { return completed.current }, execute };
 }

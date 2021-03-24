@@ -24,6 +24,7 @@ export const handlers = [
   }),
   rest.get('https://test.com/wait', (request, response, context) => {
     return response(
+      context.delay(100),
       context.status(200)
     );
   })
