@@ -1,6 +1,6 @@
 # @bloodyaugust/use-fetch
 
-A simple, *safe* fetch custom hook for React. Why safe? There's a good chance you've seen this before:
+A simple, _safe_ fetch custom hook for React. Why safe? There's a good chance you've seen this before:
 
 ```
 Warning: Can’t perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
@@ -10,7 +10,7 @@ This hook helps you avoid mutating state on components that are `unmounted` by p
 
 ## Features
 
-- *Safe*: gives you the tools to avoid mutating state on `unmounted` components.
+- _Safe_: gives you the tools to avoid mutating state on `unmounted` components.
 - Simple: Just a hook! No `Context`s were harmed (or used) in the source of this library.
 - Flexible: you get the `response`, the `json`, and of course the `mounted` state.
 - Configurable: turn off automatic `json` parsing for those one-off cases.
@@ -30,9 +30,10 @@ yarn add @bloodyaugust/use-fetch
 ## Usage
 
 This example demonstrates how you might get some todos with `useFetch` while being sure you don't mutate state after your component is `unmounted`.
+
 ```jsx
-import React, { useEffect, useState } from 'react';
-import useFetch from '@bloodyaugust/use-fetch';
+import React, { useEffect, useState } from "react";
+import useFetch from "@bloodyaugust/use-fetch";
 
 function TodoList() {
   const { execute } = useFetch();
@@ -40,12 +41,13 @@ function TodoList() {
 
   useEffect(() => {
     const getTodos = async () => {
-      await execute('https://jsonplaceholder.typicode.com/todos/')
-        .then(({ json, mounted }) => {
+      await execute("https://jsonplaceholder.typicode.com/todos/").then(
+        ({ json, mounted }) => {
           if (mounted) {
             setTodos(json);
           }
-        });
+        }
+      );
     };
 
     getTodos();
@@ -54,7 +56,7 @@ function TodoList() {
   return (
     <div>
       {todos.map((todo) => {
-        <span key={todo.id}>{todo.title}</span>
+        <span key={todo.id}>{todo.title}</span>;
       })}
     </div>
   );
@@ -67,13 +69,13 @@ function TodoList() {
 
 ```jsx
 useFetch({
-  noJSON: bool // Set true if you want to skip JSON parsing (no json key will be provided to the promise chain)
-})
+  noJSON: bool, // Set true if you want to skip JSON parsing (no json key will be provided to the promise chain)
+});
 ```
 
 ### Execute
 
-`execute` is the only object returned by the hook. It provides as consistent an API as it can, but there are some slight differences depending on if the request is successful, aborted, or failed for some other reason.
+`execute` is the function returned for invoking your fetch. It provides as consistent an API as it can, but there are some slight differences depending on if the request is successful, aborted, or failed for some other reason.
 
 Parameters are the same as [fetch](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
 
@@ -107,3 +109,7 @@ useFetch('https://jsonplaceholder.typicode.com/todos/')
     mounted
   } => {})
 ```
+
+### Completed
+
+`completed` is a ref returned from the hook to allow for determining the completion state of the fetch. It starts as `false`, but becomes true when the request completes for any reason (including abort).
