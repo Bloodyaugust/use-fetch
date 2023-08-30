@@ -1,6 +1,6 @@
 {
   "name": "@bloodyaugust/use-fetch",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "A simple, safe fetch custom hook for React.",
   "main": "main.js",
   "author": "Greyson Richey",
@@ -34,6 +34,6 @@
     "rollup": "^2.36.1"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   }
 }

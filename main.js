@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export default function useFetch(props = {}) {
   const abortController = useRef(null);
+  const completed = useRef(false);
   const mounted = useRef(true);
 
   const execute = async (url, options) => {
@@ -9,28 +10,31 @@ export default function useFetch(props = {}) {
     abortController.current = new AbortController();
 
     try {
+      completed.current = false;
       response = await fetch(url, {
         signal: abortController.current.signal,
-        ...options
+        ...options,
       });
     } catch (error) {
       return Promise.reject({
-        error
+        error,
       });
+    } finally {
+      completed.current = true;
     }
 
     if (!response.ok) {
       return Promise.reject({
         response,
         error: new Error(`Request failed: ${response.status}`),
-        mounted: mounted.current
+        mounted: mounted.current,
       });
     }
 
     if (props.noJSON) {
       return Promise.resolve({
         response,
-        mounted
+        mounted,
       });
     }
 
@@ -39,9 +43,9 @@ export default function useFetch(props = {}) {
     return Promise.resolve({
       response,
       json,
-      mounted: mounted.current
+      mounted: mounted.current,
     });
-  }
+  };
 
   useEffect(() => {
     return () => {
@@ -50,8 +54,13 @@ export default function useFetch(props = {}) {
       if (abortController.current) {
         abortController.current.abort();
       }
-    }
+    };
   }, []);
 
-  return { execute };
+  return {
+    get completed() {
+      return completed.current;
+    },
+    execute,
+  };
 }
